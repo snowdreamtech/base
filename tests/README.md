@@ -1,8 +1,92 @@
-# Scripts Version Centralization Tests
+# Test Suite
 
-This directory contains property-based tests for the scripts version centralization bugfix.
+This directory contains tests for the Docker base template project, including build verification tests and property-based tests for bugfixes.
 
 ## Test Files
+
+### Docker Build Verification Tests
+
+#### Alpine Build Verification Test
+
+**File**: `tests/build-verification-alpine.sh`
+
+**Purpose**: Verify Alpine Docker image builds correctly with expected base image and OCI annotations
+
+**Requirements**: 2.1, 2.4, 2.5
+
+**What it tests**:
+
+- Docker is available and running
+- alpine/Dockerfile exists
+- Base image is snowdreamtech/alpine:3.23.4
+- Docker image builds without errors
+- OCI labels are present and correct:
+  - org.opencontainers.image.authors=Snowdream Tech
+  - org.opencontainers.image.title=Base Image Based On Alpine
+  - org.opencontainers.image.version=3.23.4
+  - org.opencontainers.image.licenses=MIT
+  - org.opencontainers.image.vendor=Snowdream Tech
+- Version label matches expected version (3.23.4)
+- Entrypoint is configured correctly (docker-entrypoint.sh)
+
+**Run**:
+
+```bash
+sh tests/build-verification-alpine.sh
+```
+
+**Expected Outcome**: All tests pass when Docker is running and Alpine Dockerfile is correctly configured
+
+**Cleanup**: Automatically removes test image on completion
+
+---
+
+#### Alpine Runtime Behavior Test
+
+**File**: `tests/runtime-behavior-alpine.sh`
+
+**Purpose**: Verify Alpine Docker container runtime behavior including user creation, environment variables, and DEBUG mode
+
+**Requirements**: 3.2, 4.4, 5.1-5.9
+
+**What it tests**:
+
+- Docker is available and running
+- Default root user configuration (uid=0, gid=0)
+- Custom user creation with PUID/PGID/USER build arguments
+  - Builds image with PUID=1000, PGID=1000, USER=testuser
+  - Verifies user is created with correct UID and GID
+- Environment variables are set correctly:
+  - KEEPALIVE=0
+  - CAP_NET_BIND_SERVICE=0
+  - LANG=C.UTF-8
+  - UMASK=022
+  - DEBUG=false
+  - PGID=0
+  - PUID=0
+  - USER=root
+  - WORKDIR=/root
+- DEBUG mode produces expected output:
+  - Shows entrypoint execution message
+  - Shows script execution messages
+  - Shows completion message
+- Entrypoint scripts are executable
+- Container runs without errors
+- Environment variable override works at runtime
+
+**Run**:
+
+```bash
+sh tests/runtime-behavior-alpine.sh
+```
+
+**Expected Outcome**: All tests pass when Docker is running and Alpine container is correctly configured
+
+**Cleanup**: Automatically removes test images and containers on completion
+
+---
+
+### Scripts Version Centralization Tests
 
 ### 1. Bug Condition Exploration Test
 
