@@ -16,11 +16,30 @@ name: "🐳 Docker Multi-Platform Build"
       - "main"
       - "dev"
     tags:
-      # Release-Please generated tags for Alpine
+      # Release-Please generated tags for Alpine (primary format)
+      - "alpine-v*"
+      # Release-Please generated tags for Debian (primary format)
+      - "debian-v*"
+      # Release-Please generated tags for Rocky (primary format)
+      - "rocky-v*"
+      # Legacy semantic version tags (backward compatibility)
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "V[0-9]+.[0-9]+.[0-9]+"
+      - "alpine-*.*.*"
+      - "debian-*.*.*"
+      - "rocky-*.*.*"
+      - "[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+"
+      - "V[0-9]+.[0-9]+"
+      - "alpine-*.*"
+      - "debian-*.*"
+      - "rocky-*.*"
+      - "[0-9]+"
+      - "v[0-9]+"
+      - "V[0-9]+"
       - "alpine-*"
-      # Release-Please generated tags for Debian
       - "debian-*"
-      # Release-Please generated tags for Rocky
       - "rocky-*"
   schedule:
     # Automatically run every day at 17:00 UTC
