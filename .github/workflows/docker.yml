@@ -239,29 +239,33 @@ jobs:
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: |
-            name=snowdreamtech/base,enable=true,suffix=-${{ matrix.variant }}
-            name=ghcr.io/snowdreamtech/base,enable=true,suffix=-${{ matrix.variant }}
-            name=quay.io/snowdreamtech/base,enable=true,suffix=-${{ matrix.variant }}
+            name=snowdreamtech/base,enable=true
+            name=ghcr.io/snowdreamtech/base,enable=true
+            name=quay.io/snowdreamtech/base,enable=true
           flavor: |
             latest=false
             prefix=
-            suffix=
+            suffix=-${{ matrix.variant }}
           tags: |
-            # Branch builds (non-tag pushes) - variant-branch tag
+            # Branch builds (non-tag pushes) - variant-suffixed branch tag
             type=ref,enable=${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') }},priority=600,prefix=,suffix=,event=branch
-            # Main/master branch - variant tag
-            type=raw,enable=${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=${{ matrix.variant }}
-            # Main/master branch - global latest tag (only for is_latest variant)
+            # Main/master branch - variant-suffixed tag
+            type=raw,enable=${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=latest
+            # Main/master branch - global latest tag (only for is_latest variant, no suffix)
             type=raw,enable=${{ matrix.is_latest && contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && github.event_name != 'schedule' }},priority=200,prefix=,suffix=,value=latest
-            # Tag builds - variant tag
-            type=raw,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.variant)) }},priority=200,prefix=,suffix=,value=${{ matrix.variant }}
-            # Tag builds - global latest tag (only for is_latest variant)
+            # Tag builds - variant-suffixed tag
+            type=raw,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.variant)) }},priority=200,prefix=,suffix=,value=latest
+            # Tag builds - global latest tag (only for is_latest variant, no suffix)
             type=raw,enable=${{ matrix.is_latest && startsWith(github.ref, format('refs/tags/{0}-', matrix.variant)) }},priority=200,prefix=,suffix=,value=latest
-            # Nightly builds
-            type=schedule,enable=true,priority=1000,prefix=,suffix=-nightly,pattern=nightly
-            # Date-based tags for traceability (YYYYMMDD)
+            # Nightly builds - variant-suffixed
+            type=schedule,enable=true,priority=1000,prefix=,suffix=,pattern=nightly
+            # Nightly builds - global nightly tag (only for is_latest variant, no suffix)
+            type=schedule,enable=${{ matrix.is_latest }},priority=1000,prefix=,suffix=,pattern=nightly
+            # Date-based tags for traceability (YYYYMMDD) - variant-suffixed
             type=schedule,enable=true,priority=900,prefix=,suffix=,pattern={{date 'YYYYMMDD'}}
-            # Semantic version tags from Release Please (variant-x.y.z)
+            # Date-based tags - global tag (only for is_latest variant, no suffix)
+            type=schedule,enable=${{ matrix.is_latest }},priority=900,prefix=,suffix=,pattern={{date 'YYYYMMDD'}}
+            # Semantic version tags from Release Please (variant-x.y.z) - variant-suffixed
             type=match,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.variant)) }},priority=800,prefix=,suffix=,pattern=${{ matrix.variant }}-v?(\d+\.\d+\.\d+),group=1
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
