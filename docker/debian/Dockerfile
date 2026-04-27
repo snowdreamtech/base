@@ -74,9 +74,6 @@ RUN set -eux \
 
 COPY entrypoint.d /usr/local/bin/entrypoint.d
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/entrypoint.d/*
+RUN chmod +x /usr/local/bin/entrypoint.d/*
 
 ENTRYPOINT ["docker-entrypoint.sh"]
