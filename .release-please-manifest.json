@@ -1,5 +1,5 @@
 {
-  "alpine": "3.23.4",
-  "debian": "13.4.0",
-  "rocky": "10.1.0"
+  "docker/alpine": "3.23.4",
+  "docker/debian": "13.4.0",
+  "docker/rocky": "10.1.0"
 }
