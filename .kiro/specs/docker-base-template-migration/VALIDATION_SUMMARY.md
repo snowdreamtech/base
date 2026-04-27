@@ -57,6 +57,7 @@ Both English and Simplified Chinese documentation have been created and verified
 All distribution variants have been successfully implemented:
 
 #### Alpine Variant
+
 - ✅ Dockerfile with base image `snowdreamtech/alpine:3.23.4`
 - ✅ OCI annotations with version 3.23.4
 - ✅ ARG and ENV declarations (9 standard variables)
@@ -66,6 +67,7 @@ All distribution variants have been successfully implemented:
 - ✅ Correct file permissions (executable bits set)
 
 #### Debian Variant
+
 - ✅ Dockerfile with base image `snowdreamtech/debian:13.4.0`
 - ✅ OCI annotations with version 13.4.0
 - ✅ ARG and ENV declarations (10 variables including DEBIAN_FRONTEND)
@@ -75,6 +77,7 @@ All distribution variants have been successfully implemented:
 - ✅ Correct file permissions (executable bits set)
 
 #### Rocky Variant
+
 - ✅ Dockerfile with base image `snowdreamtech/rocky:10.1.0`
 - ✅ OCI annotations with version 10.1.0
 - ✅ ARG and ENV declarations (9 standard variables)

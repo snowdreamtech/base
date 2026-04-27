@@ -7,12 +7,14 @@ This document describes the Docker image tagging strategy for the base template 
 All images use the format: `snowdreamtech/base:TAG`
 
 Where `TAG` follows these patterns:
+
 - **Variant-specific tags**: `TAG-variant` (e.g., `nightly-alpine`, `3.23.4-alpine`)
 - **Default tags** (Debian only): `TAG` (e.g., `nightly`, `latest`, `13.4.0`)
 
 ## Supported Registries
 
 All tags are pushed to three registries:
+
 - **DockerHub**: `snowdreamtech/base:TAG`
 - **GitHub Container Registry**: `ghcr.io/snowdreamtech/base:TAG`
 - **Quay.io**: `quay.io/snowdreamtech/base:TAG`
@@ -22,11 +24,13 @@ All tags are pushed to three registries:
 ### 1. Branch Builds (dev/main)
 
 #### Push to `dev` branch
+
 ```bash
 git push origin dev
 ```
 
 **Generated tags:**
+
 ```
 snowdreamtech/base:dev-alpine
 snowdreamtech/base:dev-debian
@@ -35,11 +39,13 @@ snowdreamtech/base:dev-rocky
 ```
 
 #### Push to `main` branch
+
 ```bash
 git push origin main
 ```
 
 **Generated tags:**
+
 ```
 snowdreamtech/base:main-alpine
 snowdreamtech/base:latest-alpine
@@ -56,24 +62,28 @@ snowdreamtech/base:latest-rocky
 ### 2. Release Tags (Semantic Versioning)
 
 #### Alpine Release
+
 ```bash
 git tag alpine-v3.23.4
 git push origin alpine-v3.23.4
 ```
 
 **Generated tags:**
+
 ```
 snowdreamtech/base:3.23.4-alpine
 snowdreamtech/base:latest-alpine
 ```
 
 #### Debian Release
+
 ```bash
 git tag debian-v13.4.0
 git push origin debian-v13.4.0
 ```
 
 **Generated tags:**
+
 ```
 snowdreamtech/base:13.4.0-debian
 snowdreamtech/base:latest-debian
@@ -82,12 +92,14 @@ snowdreamtech/base:latest           # ← Debian (default)
 ```
 
 #### Rocky Release
+
 ```bash
 git tag rocky-v10.1.0
 git push origin rocky-v10.1.0
 ```
 
 **Generated tags:**
+
 ```
 snowdreamtech/base:10.1.0-rocky
 snowdreamtech/base:latest-rocky
@@ -100,6 +112,7 @@ snowdreamtech/base:latest-rocky
 **Trigger:** Automatically every day at 17:00 UTC
 
 **Generated tags:**
+
 ```
 # Alpine
 snowdreamtech/base:nightly-alpine
@@ -137,6 +150,7 @@ Tags are generated with the following priority (higher number = higher priority)
 Debian is designated as the **default variant** (`is_latest: true`), which means:
 
 ✅ **Debian gets BOTH suffixed AND unsuffixed tags:**
+
 ```
 snowdreamtech/base:nightly-debian   # Variant-specific
 snowdreamtech/base:nightly          # Default (no suffix)
@@ -149,6 +163,7 @@ snowdreamtech/base:latest           # Default (no suffix)
 ```
 
 ❌ **Alpine and Rocky get ONLY suffixed tags:**
+
 ```
 snowdreamtech/base:nightly-alpine   # Variant-specific only
 snowdreamtech/base:nightly-rocky    # Variant-specific only
@@ -159,6 +174,7 @@ snowdreamtech/base:nightly-rocky    # Variant-specific only
 ## Usage Examples
 
 ### Pull the latest Debian image (default)
+
 ```bash
 docker pull snowdreamtech/base:latest
 # or
@@ -166,16 +182,19 @@ docker pull snowdreamtech/base:latest-debian
 ```
 
 ### Pull the latest Alpine image
+
 ```bash
 docker pull snowdreamtech/base:latest-alpine
 ```
 
 ### Pull the latest Rocky image
+
 ```bash
 docker pull snowdreamtech/base:latest-rocky
 ```
 
 ### Pull a specific version
+
 ```bash
 # Alpine 3.23.4
 docker pull snowdreamtech/base:3.23.4-alpine
@@ -189,6 +208,7 @@ docker pull snowdreamtech/base:10.1.0-rocky
 ```
 
 ### Pull nightly builds
+
 ```bash
 # Alpine nightly
 docker pull snowdreamtech/base:nightly-alpine
@@ -206,6 +226,7 @@ docker pull snowdreamtech/base:nightly-rocky
 ## Tag Lifecycle
 
 ### Development Flow
+
 ```
 1. Push to dev → base:dev-alpine, base:dev-debian, base:dev, base:dev-rocky
 2. Push to main → base:main-alpine, base:latest-alpine, base:main-debian, base:latest-debian, base:main, base:latest, base:main-rocky, base:latest-rocky
@@ -213,6 +234,7 @@ docker pull snowdreamtech/base:nightly-rocky
 ```
 
 ### Release Flow (with Release Please)
+
 ```
 1. Merge PR to main → Release Please creates release PR
 2. Merge release PR → Release Please creates tags (alpine-vX.Y.Z, debian-vX.Y.Z, rocky-vX.Y.Z)
@@ -261,6 +283,7 @@ flavor: |
 ```
 
 For Debian (is_latest), additional rules generate unsuffixed tags:
+
 ```yaml
 type=raw,enable=${{ matrix.is_latest }},priority=1000,prefix=,suffix=,pattern=nightly
 ```

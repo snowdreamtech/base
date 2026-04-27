@@ -1,5 +1,7 @@
 # Requirements Document
 
+<!-- markdownlint-disable MD024 -->
+
 ## Introduction
 
 This document defines the requirements for migrating and standardizing the Docker base template project. The base project serves as a foundational template for other Docker container projects, providing standardized Dockerfiles, entrypoint scripts, and configuration patterns across Alpine, Debian, and Rocky Linux distributions.

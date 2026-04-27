@@ -208,11 +208,13 @@ services:
 Images follow semantic versioning with the format: `{major}-v{major}.{minor}.{patch}`
 
 Examples:
+
 - `snowdreamtech/base:debian-13-v13.4.0`
 - `snowdreamtech/base:alpine-3-v3.23.4`
 - `snowdreamtech/base:rocky-10-v10.1.0`
 
 This format allows:
+
 - **Major version pinning**: `debian-13` (tracks latest 13.x.x)
 - **Full version pinning**: `debian-13-v13.4.0` (exact version)
 - **Latest tag**: `debian` or `latest` (tracks most recent release)
@@ -265,6 +267,7 @@ docker run -e DEBUG=true snowdreamtech/base:debian
 ```
 
 Output example:
+
 ```
 → [ENTRYPOINT] Executing all scripts in /usr/local/bin/entrypoint.d
 → Running /usr/local/bin/entrypoint.d/10-base-init.sh
@@ -316,7 +319,7 @@ docker run --rm -e DEBUG=true base:debian
 
 ## Contact (备注：base)
 
-* Email: sn0wdr1am@qq.com
+* Email: <sn0wdr1am@qq.com>
 * QQ: 3217680847
 * QQ群: 949022145
 * WeChat/微信群: sn0wdr1am

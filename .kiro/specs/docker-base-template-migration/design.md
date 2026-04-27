@@ -7,6 +7,7 @@ This design document outlines the technical approach for migrating and standardi
 ### Project Context
 
 The base project serves as a foundational template for other Docker container projects, providing:
+
 - Standardized Dockerfiles with OCI annotations
 - Flexible entrypoint system supporting custom initialization scripts
 - Consistent environment variable configuration
@@ -32,7 +33,6 @@ The base project serves as a foundational template for other Docker container pr
 ## Architecture
 
 ### Directory Structure
-
 
 ```
 base/                                    # Target project (workspace root)
@@ -94,10 +94,12 @@ graph TB
 ### Multi-Root Workspace Configuration
 
 The project operates in a multi-root workspace with two distinct roots:
+
 - **base**: Target project where all new files are created
 - **base0**: Reference project (read-only) for pattern extraction
 
 Path resolution strategy:
+
 - All file creation operations target `base/` workspace root
 - All reference file reads target `base0/` workspace root
 - No modifications to base0 project files
@@ -160,6 +162,7 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 | Extra ENV | - | DEBIAN_FRONTEND=noninteractive | - |
 
 **Interface Contract**:
+
 - Input: Build arguments (PUID, PGID, USER, etc.)
 - Output: Container image with entrypoint system configured
 - Side Effects: Creates user/group if specified, installs packages
@@ -197,6 +200,7 @@ fi
 ```
 
 **Key Characteristics**:
+
 - POSIX-compliant (#!/bin/sh) for maximum compatibility
 - Fail-fast with `set -e`
 - Iterates through `/usr/local/bin/entrypoint.d/*` in lexical order
@@ -209,6 +213,7 @@ fi
 Minimal initialization script following Base0_Project pattern. Serves as extension point for future initialization logic.
 
 **Interface Contract**:
+
 - Input: Command-line arguments passed to container
 - Output: Initialized container environment
 - Side Effects: Executes all scripts in entrypoint.d directory
@@ -271,6 +276,7 @@ Minimal initialization script following Base0_Project pattern. Serves as extensi
 ```
 
 **Interface Contract**:
+
 - Input: Conventional commit messages
 - Output: Automated version bumps, changelogs, and releases
 - Integration: GitHub Actions workflow triggers Release Please
@@ -305,6 +311,7 @@ docker run -e DEBUG=true -e KEEPALIVE=1 myimage
 ```
 
 **Interface Contract**:
+
 - Input: Build arguments or environment variables
 - Output: Configured container behavior
 - Validation: User creation only occurs when PUID≠0, PGID≠0, USER≠root
@@ -421,6 +428,7 @@ RUN if [ "${USER}" != "root" ] && [ ! -d "/home/${USER}" ] && [ "${PUID}" -ne 0 
 ```
 
 Error scenarios handled:
+
 - USER=root: Skip user creation (use root)
 - PUID=0 or PGID=0: Skip user creation (invalid IDs)
 - Home directory exists: Skip user creation (avoid conflicts)
@@ -447,6 +455,7 @@ done
 **Debug Mode**:
 
 When DEBUG=true, the entrypoint provides detailed execution information:
+
 - Script discovery and execution status
 - Non-executable script warnings
 - Execution flow tracking
@@ -456,6 +465,7 @@ When DEBUG=true, the entrypoint provides detailed execution information:
 **Release Please Configuration**:
 
 Validation requirements:
+
 - All distribution variants must be defined in both config and manifest
 - Version strings must follow semantic versioning
 - Component names must match directory names
@@ -463,6 +473,7 @@ Validation requirements:
 **Commit Message Validation**:
 
 Enforced by commitlint with @commitlint/config-conventional:
+
 - Type must be from allowed list
 - Header ≤ 120 characters
 - Description must be lowercase
@@ -470,6 +481,7 @@ Enforced by commitlint with @commitlint/config-conventional:
 - English only
 
 Error feedback:
+
 ```bash
 $ git commit -m "Fix: Update dockerfile"
 ⧗   input: Fix: Update dockerfile
@@ -538,6 +550,7 @@ docker inspect base:rocky-test --format='{{.Config.Image}}'
 ```
 
 **Validation**:
+
 - Build completes without errors
 - Base image version matches specification
 - All OCI labels present and correct
@@ -569,6 +582,7 @@ docker run --rm base:alpine-test env | grep -E '(KEEPALIVE|LANG|UMASK)'
 ```
 
 **Validation**:
+
 - User creation works correctly with PUID/PGID
 - Environment variables set correctly
 - Debug mode produces expected output
@@ -599,6 +613,7 @@ docker run --rm base:alpine-test sh -c "echo 'exit 1' > /usr/local/bin/entrypoin
 ```
 
 **Validation**:
+
 - Scripts execute in correct order
 - Non-executable scripts skipped
 - Errors propagate correctly (set -e)
@@ -622,6 +637,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t base:rocky-multiarch .
 ```
 
 **Validation**:
+
 - Builds complete for all target architectures
 - No architecture-specific build failures
 - Image manifests include all architectures
@@ -651,6 +667,7 @@ npx commitlint --from HEAD~1 --to HEAD --verbose
 ```
 
 **Validation**:
+
 - JSON files are valid
 - All distribution variants configured
 - Versions match specifications
@@ -680,6 +697,7 @@ git check-attr eol alpine/docker-entrypoint.sh
 ```
 
 **Validation**:
+
 - Scripts pass ShellCheck with POSIX mode
 - Line endings normalized to LF
 - .gitattributes configured correctly
@@ -687,6 +705,7 @@ git check-attr eol alpine/docker-entrypoint.sh
 ### Test Execution Strategy
 
 **Local Development**:
+
 ```bash
 # Run build tests
 make test-build
@@ -699,6 +718,7 @@ make test
 ```
 
 **CI/CD Pipeline**:
+
 ```yaml
 # .github/workflows/test.yml
 name: Test
@@ -718,6 +738,7 @@ jobs:
 ```
 
 **Test Coverage Goals**:
+
 - 100% of Dockerfiles build successfully
 - 100% of entrypoint scripts execute without errors
 - 100% of configuration files validate correctly
@@ -745,6 +766,7 @@ Before considering migration complete:
 **Objective**: Establish project structure and configuration foundation
 
 **Tasks**:
+
 1. Verify multi-root workspace configuration (base and base0)
 2. Create distribution variant directories (alpine, debian, rocky)
 3. Configure .gitattributes for line ending normalization
@@ -752,6 +774,7 @@ Before considering migration complete:
 5. Update package.json with project metadata
 
 **Validation**:
+
 - Directory structure matches design
 - .gitattributes enforces LF for .sh files
 - JSON configuration files validate
@@ -763,6 +786,7 @@ Before considering migration complete:
 **Objective**: Migrate Alpine variant from Base0_Project to Base_Project
 
 **Tasks**:
+
 1. Create alpine/Dockerfile with snowdreamtech/alpine:3.23.4
 2. Copy and adapt OCI annotations
 3. Implement ARG and ENV declarations
@@ -774,6 +798,7 @@ Before considering migration complete:
 9. Test build and runtime behavior
 
 **Validation**:
+
 - Alpine image builds successfully
 - All tests pass for Alpine variant
 - Commit follows atomic commit strategy
@@ -785,6 +810,7 @@ Before considering migration complete:
 **Objective**: Migrate Debian variant from Base0_Project to Base_Project
 
 **Tasks**:
+
 1. Create debian/Dockerfile with snowdreamtech/debian:13.4.0
 2. Copy and adapt OCI annotations
 3. Implement ARG and ENV declarations (including DEBIAN_FRONTEND)
@@ -796,6 +822,7 @@ Before considering migration complete:
 9. Test build and runtime behavior
 
 **Validation**:
+
 - Debian image builds successfully
 - All tests pass for Debian variant
 - Commit follows atomic commit strategy
@@ -807,6 +834,7 @@ Before considering migration complete:
 **Objective**: Migrate Rocky variant from Base0_Project to Base_Project
 
 **Tasks**:
+
 1. Create rocky/Dockerfile with snowdreamtech/rocky:10.1.0
 2. Copy and adapt OCI annotations
 3. Implement ARG and ENV declarations
@@ -818,6 +846,7 @@ Before considering migration complete:
 9. Test build and runtime behavior
 
 **Validation**:
+
 - Rocky image builds successfully
 - All tests pass for Rocky variant
 - Commit follows atomic commit strategy
@@ -829,6 +858,7 @@ Before considering migration complete:
 **Objective**: Create comprehensive documentation in English and Simplified Chinese
 
 **Tasks**:
+
 1. Create README.md (English) with:
    - Project overview
    - Quick start guide
@@ -841,6 +871,7 @@ Before considering migration complete:
 5. Create usage examples for each distribution variant
 
 **Validation**:
+
 - Documentation complete and accurate
 - Quick start works in < 5 commands
 - Both language versions consistent
@@ -852,6 +883,7 @@ Before considering migration complete:
 **Objective**: Comprehensive validation of all components
 
 **Tasks**:
+
 1. Run full test suite for all variants
 2. Test multi-architecture builds
 3. Validate Release Please configuration
@@ -861,6 +893,7 @@ Before considering migration complete:
 7. Final code review
 
 **Validation**:
+
 - All tests pass
 - All linting passes
 - All commits follow conventions
@@ -875,12 +908,14 @@ Before considering migration complete:
 ### Dependencies and Risks
 
 **Dependencies**:
+
 - Access to base and base0 workspaces
 - Docker and docker buildx installed
 - Node.js and pnpm for tooling
 - Git configured correctly
 
 **Risks**:
+
 1. **Base image availability**: Mitigation: Verify images exist before starting
 2. **Architecture support differences**: Mitigation: Document per-variant architectures
 3. **Path resolution in multi-root workspace**: Mitigation: Test path operations early
@@ -889,6 +924,7 @@ Before considering migration complete:
 ### Success Criteria
 
 Migration is complete when:
+
 - [ ] All 15 requirements fully implemented
 - [ ] All 73 acceptance criteria validated
 - [ ] All three distribution variants build and run successfully
@@ -903,6 +939,7 @@ Migration is complete when:
 ### Reference Commands
 
 **Build Commands**:
+
 ```bash
 # Single architecture build
 docker build -t snowdreamtech/base:alpine ./alpine/
@@ -915,6 +952,7 @@ docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \
 ```
 
 **Test Commands**:
+
 ```bash
 # Test default configuration
 docker run --rm snowdreamtech/base:alpine id
@@ -929,6 +967,7 @@ docker run --rm -e DEBUG=true snowdreamtech/base:alpine
 ```
 
 **Validation Commands**:
+
 ```bash
 # Validate JSON configuration
 jq '.' .release-please-config.json

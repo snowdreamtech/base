@@ -119,14 +119,23 @@ jobs:
           fi
 
           # For tag pushes, check if tag matches this variant
-          if [ "${{ github.event_name }}" = "push" ] && [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            tag_name="${{ github.ref }}"
-            tag_name="${tag_name#refs/tags/}"
-            if [[ ! "${tag_name}" =~ ^${{ matrix.variant }}- ]]; then
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              echo "→ Skipping ${{ matrix.variant }} (tag ${tag_name} does not match)"
-              exit 0
-            fi
+          if [ "${{ github.event_name }}" = "push" ]; then
+            case "${{ github.ref }}" in
+              refs/tags/*)
+                tag_name="${{ github.ref }}"
+                tag_name="${tag_name#refs/tags/}"
+                case "${tag_name}" in
+                  ${{ matrix.variant }}-*)
+                    # Tag matches variant, continue
+                    ;;
+                  *)
+                    echo "skip=true" >> "$GITHUB_OUTPUT"
+                    echo "→ Skipping ${{ matrix.variant }} (tag ${tag_name} does not match)"
+                    exit 0
+                    ;;
+                esac
+                ;;
+            esac
           fi
 
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -716,9 +725,13 @@ jobs:
               echo ""
               if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
                 echo "**User selected:** ${{ inputs.variant }}"
-              elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
-                echo "**Tag:** \`${{ github.ref }}\`"
-                echo "**Expected pattern:** \`${{ matrix.variant }}-*\`"
+              else
+                case "${{ github.ref }}" in
+                  refs/tags/*)
+                    echo "**Tag:** \`${{ github.ref }}\`"
+                    echo "**Expected pattern:** \`${{ matrix.variant }}-*\`"
+                    ;;
+                esac
               fi
             else
               echo "### ❌ Build Failed"

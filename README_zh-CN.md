@@ -208,11 +208,13 @@ services:
 镜像遵循语义化版本控制，格式为：`{major}-v{major}.{minor}.{patch}`
 
 示例：
+
 - `snowdreamtech/base:debian-13-v13.4.0`
 - `snowdreamtech/base:alpine-3-v3.23.4`
 - `snowdreamtech/base:rocky-10-v10.1.0`
 
 此格式允许：
+
 - **主版本固定**：`debian-13`（跟踪最新的 13.x.x）
 - **完整版本固定**：`debian-13-v13.4.0`（精确版本）
 - **最新标签**：`debian` 或 `latest`（跟踪最新版本）
@@ -265,6 +267,7 @@ docker run -e DEBUG=true snowdreamtech/base:debian
 ```
 
 输出示例：
+
 ```
 → [ENTRYPOINT] Executing all scripts in /usr/local/bin/entrypoint.d
 → Running /usr/local/bin/entrypoint.d/10-base-init.sh
@@ -316,7 +319,7 @@ docker run --rm -e DEBUG=true base:debian
 
 ## 联系方式（备注：base）
 
-* Email: sn0wdr1am@qq.com
+* Email: <sn0wdr1am@qq.com>
 * QQ: 3217680847
 * QQ群: 949022145
 * WeChat/微信群: sn0wdr1am
