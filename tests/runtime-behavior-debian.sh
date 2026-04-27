@@ -50,7 +50,7 @@ log_error() {
 TEST_IMAGE_NAME="base-debian-runtime-test"
 DEFAULT_IMAGE_TAG="default"
 CUSTOM_USER_IMAGE_TAG="custom-user"
-DOCKERFILE_PATH="debian/Dockerfile"
+DOCKERFILE_PATH="docker/debian/Dockerfile"
 
 # Expected environment variables
 EXPECTED_ENV_VARS="
@@ -110,7 +110,7 @@ test_docker_available() {
 test_build_default_image() {
   log_info "Building Debian Docker image with default configuration..."
 
-  if ! docker build -t "${TEST_IMAGE_NAME}:${DEFAULT_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" debian/ >/dev/null 2>&1; then
+  if ! docker build -t "${TEST_IMAGE_NAME}:${DEFAULT_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" docker/debian/ >/dev/null 2>&1; then
     log_error "Docker build failed for default configuration"
     return 1
   fi
@@ -129,7 +129,7 @@ test_build_custom_user_image() {
     --build-arg USER="${CUSTOM_USER}" \
     -t "${TEST_IMAGE_NAME}:${CUSTOM_USER_IMAGE_TAG}" \
     -f "${DOCKERFILE_PATH}" \
-    debian/ >/dev/null 2>&1; then
+    docker/debian/ >/dev/null 2>&1; then
     log_error "Docker build failed for custom user configuration"
     return 1
   fi

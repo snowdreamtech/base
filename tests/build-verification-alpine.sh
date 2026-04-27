@@ -48,7 +48,7 @@ log_error() {
 # ── Configuration ────────────────────────────────────────────────────────────
 TEST_IMAGE_NAME="base-alpine-test"
 TEST_IMAGE_TAG="build-verification"
-DOCKERFILE_PATH="alpine/Dockerfile"
+DOCKERFILE_PATH="docker/alpine/Dockerfile"
 EXPECTED_BASE_IMAGE="snowdreamtech/alpine:3.23.4"
 EXPECTED_VERSION="3.23.4"
 
@@ -107,7 +107,7 @@ test_dockerfile_exists() {
 test_build_image() {
   log_info "Building Alpine Docker image..."
 
-  if ! docker build -t "${TEST_IMAGE_NAME}:${TEST_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" alpine/ 2>&1; then
+  if ! docker build -t "${TEST_IMAGE_NAME}:${TEST_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" docker/alpine/ 2>&1; then
     log_error "Docker build failed"
     return 1
   fi

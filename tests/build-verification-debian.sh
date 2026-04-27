@@ -48,7 +48,7 @@ log_error() {
 # ── Configuration ────────────────────────────────────────────────────────────
 TEST_IMAGE_NAME="base-debian-test"
 TEST_IMAGE_TAG="build-verification"
-DOCKERFILE_PATH="debian/Dockerfile"
+DOCKERFILE_PATH="docker/debian/Dockerfile"
 EXPECTED_BASE_IMAGE="snowdreamtech/debian:13.4.0"
 EXPECTED_VERSION="13.4.0"
 
@@ -107,7 +107,7 @@ test_dockerfile_exists() {
 test_build_image() {
   log_info "Building Debian Docker image..."
 
-  if ! docker build -t "${TEST_IMAGE_NAME}:${TEST_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" debian/ 2>&1; then
+  if ! docker build -t "${TEST_IMAGE_NAME}:${TEST_IMAGE_TAG}" -f "${DOCKERFILE_PATH}" docker/debian/ 2>&1; then
     log_error "Docker build failed"
     return 1
   fi

@@ -85,13 +85,13 @@ docker run -d \
 
 ```bash
 # Build Debian variant
-docker build -t snowdreamtech/base:debian ./debian/
+docker build -t snowdreamtech/base:debian ./docker/debian/
 
 # Build Alpine variant
-docker build -t snowdreamtech/base:alpine ./alpine/
+docker build -t snowdreamtech/base:alpine ./docker/alpine/
 
 # Build Rocky variant
-docker build -t snowdreamtech/base:rocky ./rocky/
+docker build -t snowdreamtech/base:rocky ./docker/rocky/
 ```
 
 ### Multi-Architecture Build
@@ -106,21 +106,21 @@ docker buildx create --use --name build --node build --driver-opt network=host
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x \
   -t snowdreamtech/base:debian \
-  ./debian/ \
+  ./docker/debian/ \
   --push
 
 # Build Alpine for multiple architectures
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x \
   -t snowdreamtech/base:alpine \
-  ./alpine/ \
+  ./docker/alpine/ \
   --push
 
 # Build Rocky for multiple architectures
 docker buildx build \
   --platform=linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x \
   -t snowdreamtech/base:rocky \
-  ./rocky/ \
+  ./docker/rocky/ \
   --push
 ```
 
@@ -157,7 +157,7 @@ docker build \
   --build-arg PGID=1000 \
   --build-arg USER=appuser \
   -t snowdreamtech/base:debian-custom \
-  ./debian/
+  ./docker/debian/
 ```
 
 Or at runtime (requires rebuilding the image):
@@ -285,9 +285,9 @@ Output example:
 make build
 
 # Build specific variant
-docker build -t base:debian ./debian/
-docker build -t base:alpine ./alpine/
-docker build -t base:rocky ./rocky/
+docker build -t base:debian ./docker/debian/
+docker build -t base:alpine ./docker/alpine/
+docker build -t base:rocky ./docker/rocky/
 ```
 
 ### Testing
@@ -297,7 +297,7 @@ docker build -t base:rocky ./rocky/
 docker run --rm base:debian id
 
 # Test custom user creation
-docker build --build-arg PUID=1000 --build-arg PGID=1000 --build-arg USER=testuser -t base:debian-test ./debian/
+docker build --build-arg PUID=1000 --build-arg PGID=1000 --build-arg USER=testuser -t base:debian-test ./docker/debian/
 docker run --rm base:debian-test id
 # Expected: uid=1000(testuser) gid=1000(testuser)
 
