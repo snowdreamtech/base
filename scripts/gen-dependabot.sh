@@ -335,8 +335,13 @@ scan_ecosystems() {
   fi
 
   # ── 8. Docker ───────────────────────────────────────────────────────────
-  _docker_dirs=$(find_dirs_for_patterns "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml" | grep -v -E '(node_modules/|vendor/|\.terraform/)' || true)
-  if [ -n "${_docker_dirs:-}" ]; then
+  # Exclude .devcontainer directory as it's handled by devcontainers ecosystem
+  _docker_files=$(git ls-files "Dockerfile" "**/Dockerfile" "Dockerfile.*" "**/Dockerfile.*" "docker-compose.yml" "docker-compose.yaml" "**/docker-compose.yml" "**/docker-compose.yaml" 2>/dev/null | grep -v -E '(node_modules/|vendor/|\.terraform/|\.devcontainer/)' || true)
+  if [ -n "${_docker_files:-}" ]; then
+    _docker_dirs=$(echo "${_docker_files:-}" | while IFS= read -r _file; do
+      _dir=$(dirname "${_file:-}")
+      [ "${_dir:-}" = "." ] && echo "/" || echo "/$_dir"
+    done | sort -u)
     echo "${_docker_dirs:-}" | while IFS= read -r _d; do
       if [ -n "${_d:-}" ]; then _emit_unique "docker" "${_d:-}"; fi
     done
@@ -420,11 +425,12 @@ scan_ecosystems() {
   fi
 
   # ── 18. Dev Containers ──────────────────────────────────────────────────
-  _dc_dirs=$(find_dirs_for_patterns "devcontainer.json" ".devcontainer.json" "**/devcontainer.json" "**/.devcontainer.json")
-  if [ -n "${_dc_dirs:-}" ]; then
-    echo "${_dc_dirs:-}" | while IFS= read -r _d; do
-      if [ -n "${_d:-}" ]; then _emit_unique "devcontainers" "${_d:-}"; fi
-    done
+  # Note: Dependabot's devcontainers ecosystem requires directory to point to the
+  # parent directory containing .devcontainer/, not .devcontainer/ itself.
+  # It looks for: .devcontainer.json OR .devcontainer/devcontainer.json OR .devcontainer/<name>/devcontainer.json
+  if has_tracked_file ".devcontainer.json" ".devcontainer/devcontainer.json" ".devcontainer/*/devcontainer.json"; then
+    # For root-level .devcontainer, always use "/"
+    _emit_unique "devcontainers" "/"
   fi
 
   # ── 19. Bazel ────────────────────────────────────────────────────────────
