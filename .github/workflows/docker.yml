@@ -83,14 +83,14 @@ jobs:
           - variant: debian
             version: "13.4.0"
             context: docker/debian
-            platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x
             is_latest: true
             package_manager: apt-get
 
           - variant: rocky
             version: "10.1.0"
             context: docker/rocky
-            platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             is_latest: false
             package_manager: dnf
     concurrency:
@@ -383,7 +383,19 @@ jobs:
             platform_count=$(echo "${manifest}" | grep -c "Platform:" || echo "0")
             echo "platform_count=${platform_count}" >> "$GITHUB_OUTPUT"
 
-            expected_count=8
+            # Set expected count based on variant
+            case "${{ matrix.variant }}" in
+              alpine|debian)
+                expected_count=8
+                ;;
+              rocky)
+                expected_count=4
+                ;;
+              *)
+                expected_count=8
+                ;;
+            esac
+
             if [ "${platform_count}" -eq "${expected_count}" ]; then
               echo "✓ All ${expected_count} platforms verified in manifest"
               echo "status=success" >> "$GITHUB_OUTPUT"
@@ -684,7 +696,19 @@ jobs:
               if [ -n "${{ steps.manifest-check.outputs.platform_count }}" ]; then
                 echo "### 🔍 Manifest Verification"
                 echo ""
-                echo "- **Platforms Verified:** ${{ steps.manifest-check.outputs.platform_count }}/8"
+                # Set expected count based on variant
+                case "${{ matrix.variant }}" in
+                  alpine|debian)
+                    expected_count=8
+                    ;;
+                  rocky)
+                    expected_count=4
+                    ;;
+                  *)
+                    expected_count=8
+                    ;;
+                esac
+                echo "- **Platforms Verified:** ${{ steps.manifest-check.outputs.platform_count }}/${expected_count}"
                 echo "- **Status:** ${{ steps.manifest-check.outputs.status }}"
                 echo ""
               fi
@@ -699,7 +723,18 @@ jobs:
               echo ""
               echo "- **Variant:** ${{ matrix.variant }}"
               echo "- **Base Version:** ${{ matrix.version }}"
-              echo "- **Platforms:** 8 architectures"
+              # Set platform count based on variant
+              case "${{ matrix.variant }}" in
+                alpine|debian)
+                  echo "- **Platforms:** 8 architectures"
+                  ;;
+                rocky)
+                  echo "- **Platforms:** 4 architectures"
+                  ;;
+                *)
+                  echo "- **Platforms:** 8 architectures"
+                  ;;
+              esac
               echo "- **Package Manager:** ${{ matrix.package_manager }}"
               echo "- **Registries:** DockerHub (${{ steps.login-dockerhub.outcome }}), GHCR (${{ steps.login-ghcr.outcome }}), Quay.io (${{ steps.login-quay.outcome }})"
               echo "- **Cache Sources:** Current branch + main + dev"
