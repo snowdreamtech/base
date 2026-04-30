@@ -41,6 +41,9 @@ name: "🐳 Docker Multi-Platform Build"
       - "alpine-*"
       - "debian-*"
       - "rocky-*"
+  release:
+    # Trigger when Release-Please publishes releases via GitHub API
+    types: [published]
   schedule:
     # Automatically run every day at 17:00 UTC
     - cron: "0 17 * * *"
@@ -134,6 +137,21 @@ jobs:
                     exit 0
                     ;;
                 esac
+                ;;
+            esac
+          fi
+
+          # For release events, check if release tag matches this variant
+          if [ "${{ github.event_name }}" = "release" ]; then
+            tag_name="${{ github.event.release.tag_name }}"
+            case "${tag_name}" in
+              ${{ matrix.variant }}-*)
+                # Release tag matches variant, continue
+                ;;
+              *)
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                echo "→ Skipping ${{ matrix.variant }} (release tag ${tag_name} does not match)"
+                exit 0
                 ;;
             esac
           fi
