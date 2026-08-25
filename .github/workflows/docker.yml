@@ -124,7 +124,7 @@ jobs:
             fi
           fi
 
-          # For tag pushes, check if tag matches this variant
+          # For tag pushes, check if tag matches this variant or is a unified tag
           if [ "${{ github.event_name }}" = "push" ]; then
             case "${{ github.ref }}" in
               refs/tags/*)
@@ -132,7 +132,16 @@ jobs:
                 tag_name="${tag_name#refs/tags/}"
                 case "${tag_name}" in
                   ${{ matrix.variant }}-*)
-                    # Tag matches variant, continue
+                    # Variant-specific tag (e.g. alpine-v1.0.0), matches this variant
+                    ;;
+                  alpine-*|debian-*|rocky-*)
+                    # Variant-specific tag for a different variant, skip this variant
+                    echo "skip=true" >> "$GITHUB_OUTPUT"
+                    echo "→ Skipping ${{ matrix.variant }} (tag ${tag_name} is for another variant)"
+                    exit 0
+                    ;;
+                  v*|[0-9]*)
+                    # Unified project tag (e.g. v0.1.1, v1.1.0, 0.1.1), build for all variants
                     ;;
                   *)
                     echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -255,7 +264,7 @@ jobs:
         id: tag-check
         if: steps.variant-filter.outputs.skip != 'true'
         run: |
-          if echo "${{ github.ref }}" | grep -Eq "^refs/tags/${{ matrix.variant }}-v?[0-9]+\.[0-9]+\.[0-9]+$"; then
+          if echo "${{ github.ref }}" | grep -Eq "^refs/tags/(${{ matrix.variant }}-)?v?[0-9]+\.[0-9]+\.[0-9]+$"; then
             echo "is_stable=true" >> "$GITHUB_OUTPUT"
           else
             echo "is_stable=false" >> "$GITHUB_OUTPUT"
@@ -289,7 +298,11 @@ jobs:
             type=schedule,enable=true,priority=1000,prefix=,suffix=-${{ matrix.variant }},pattern=nightly
             # Nightly builds - global nightly tag (only for is_latest variant, no suffix)
             type=schedule,enable=${{ matrix.is_latest }},priority=1000,prefix=,suffix=,pattern=nightly
-            # Semantic version tags from Release Please (variant-x.y.z) - variant-suffixed
+            # Semantic version tags (vX.Y.Z) - variant-suffixed
+            type=semver,pattern={{version}},suffix=-${{ matrix.variant }}
+            # Semantic version tags (vX.Y.Z) - global tag (only for is_latest variant, no suffix)
+            type=semver,pattern={{version}},enable=${{ matrix.is_latest }}
+            # Variant-prefixed tags from Release Please (variant-x.y.z) - variant-suffixed
             type=match,enable=${{ startsWith(github.ref, format('refs/tags/{0}-', matrix.variant)) }},priority=800,prefix=,suffix=-${{ matrix.variant }},pattern=${{ matrix.variant }}-v?(.*),group=1
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
