@@ -490,7 +490,7 @@ jobs:
                 echo "  ✗ DockerHub image pull failed after retries"
               fi
             fi
-          fi          fi
+          fi
 
           echo "✓ Registry verification completed"
 
