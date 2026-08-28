@@ -447,7 +447,7 @@ jobs:
               sh -c "
                 echo '  ✓ Entrypoint execution: OK' && \
                 printf '  ✓ Timezone: ' && date '+%Z %z' && \
-                printf '  ✓ User context: ' && id -un && \
+                printf '  ✓ User context: %s\n' "$(id -un 2>/dev/null || id -u)" && \
                 printf '  ✓ Package manager: ' && \
                 ${pkg_check} && echo 'functional' && \
                 echo '  ✓ All checks passed'
@@ -478,7 +478,7 @@ jobs:
 
           # DockerHub (no prefix)
           if [ "${{ steps.login-dockerhub.outcome }}" = "success" ]; then
-            dockerhub_tag=$(echo "${TAGS}" | grep -v '/' | head -n 1)
+            dockerhub_tag=$(echo "${TAGS}" | grep -v '^ghcr.io/' | head -n 1)
             if [ -n "${dockerhub_tag}" ]; then
               echo "  Testing DockerHub: ${dockerhub_tag}"
               if retry_pull "${dockerhub_tag}"; then
