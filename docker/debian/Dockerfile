@@ -4,8 +4,11 @@
 FROM ghcr.io/snowdreamtech/debian:13.6.0
 
 # Build-time Configuration
+# x-release-please-start-version
+ARG VERSION="13.6.0"
+# x-release-please-end
+
 ARG BUILDTIME \
-    VERSION \
     REVISION \
     DEBIAN_FRONTEND=noninteractive \
     KEEPALIVE=0 \

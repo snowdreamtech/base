@@ -84,7 +84,7 @@ jobs:
 
           - variant: debian
             # x-release-please-start-version
-            version: "13.5.0"
+            version: "13.6.0"
             # x-release-please-end
             context: docker/debian
             platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x
