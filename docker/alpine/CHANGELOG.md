@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.24.1](https://github.com/snowdreamtech/base/compare/alpine-v3.24.1...alpine-v3.24.1) (2026-09-08)
+
+
+### 🚀 Features
+
+* **release:** initialize VERSION ARG in Dockerfiles for Release-Please change tracking ([a501047](https://github.com/snowdreamtech/base/commit/a5010478e3be6f785dcc53ec6de12831b28a2e5b))
+
 ## [3.24.1](https://github.com/snowdreamtech/base/compare/alpine-v3.24.1...alpine-v3.24.1) (2026-07-24)
 
 
