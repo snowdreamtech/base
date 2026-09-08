@@ -7,13 +7,6 @@
 
 * **release:** initialize VERSION ARG in Dockerfiles for Release-Please change tracking ([a501047](https://github.com/snowdreamtech/base/commit/a5010478e3be6f785dcc53ec6de12831b28a2e5b))
 
-## [13.6.0](https://github.com/snowdreamtech/base/compare/debian-v13.6.0...debian-v13.6.0) (2026-08-08)
-
-
-### ♻️ Miscellaneous Chores
-
-* sync debian build matrix and documentation with upstream ([0d6e613](https://github.com/snowdreamtech/base/commit/0d6e6132c84a368f5b64b9144d9c7d3b7292d746))
-
 ## [13.5.0](https://github.com/snowdreamtech/base/compare/debian-v13.5.0...debian-v13.5.0) (2026-07-03)
 
 

@@ -7,13 +7,6 @@
 
 * **release:** initialize VERSION ARG in Dockerfiles for Release-Please change tracking ([a501047](https://github.com/snowdreamtech/base/commit/a5010478e3be6f785dcc53ec6de12831b28a2e5b))
 
-## [10.2.0](https://github.com/snowdreamtech/base/compare/rocky-v10.2.0...rocky-v10.2.0) (2026-08-19)
-
-
-### ♻️ Miscellaneous Chores
-
-* **docker:** ignore unavailable repos for rocky build ([a6b6b6e](https://github.com/snowdreamtech/base/commit/a6b6b6e5b2288cfeb6b2777902b85e7e5f37f2c3))
-
 ## [10.1.0](https://github.com/snowdreamtech/base/compare/rocky-v10.1.0...rocky-v10.1.0) (2026-04-29)
 
 

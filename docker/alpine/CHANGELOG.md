@@ -7,13 +7,6 @@
 
 * **release:** initialize VERSION ARG in Dockerfiles for Release-Please change tracking ([a501047](https://github.com/snowdreamtech/base/commit/a5010478e3be6f785dcc53ec6de12831b28a2e5b))
 
-## [3.24.1](https://github.com/snowdreamtech/base/compare/alpine-v3.24.1...alpine-v3.24.1) (2026-07-24)
-
-
-### 🐛 Bug Fixes
-
-* remove static version defaults from OCI image labels to use variable injection exclusively ([da5645a](https://github.com/snowdreamtech/base/commit/da5645ad4d48467290235abbbd9f31ba70bf690f))
-
 ## [3.24.0](https://github.com/snowdreamtech/base/compare/alpine-v3.24.0...alpine-v3.24.0) (2026-07-03)
 
 
