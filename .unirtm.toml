@@ -85,6 +85,12 @@ depends = [
 ]
 output = "interleaved"
 
+[tasks."audit:fix"]
+description = "Auto-fix security flaws and dependency vulnerabilities where supported"
+depends = ["audit:zizmor", "audit:npm", "audit:pip"]
+output = "interleaved"
+env = { UNIRTM_FIX = "1" }
+
 [tasks."audit:gitleaks"]
 description = "Scan for hardcoded secrets"
 run = "unirtm exec -- gitleaks detect --source . --no-banner"
@@ -182,6 +188,11 @@ else
     fi
 fi
 '''
+output = "interleaved"
+
+[tasks.fix]
+description = "Auto-fix code format, security flaws, and dependencies where supported"
+depends = ["lint", "audit:fix"]
 output = "interleaved"
 
 [tasks.lint]
