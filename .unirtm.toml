@@ -89,6 +89,7 @@ output = "interleaved"
 description = "Scan for hardcoded secrets"
 run = "unirtm exec -- gitleaks detect --source . --no-banner"
 output = "interleaved"
+env = { GIT_CONFIG_COUNT = "1", GIT_CONFIG_KEY_0 = "diff.renameLimit", GIT_CONFIG_VALUE_0 = "0" }
 
 [tasks."audit:zizmor"]
 description = "Audit GitHub Actions workflows for security flaws"
