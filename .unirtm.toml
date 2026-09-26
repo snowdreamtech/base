@@ -74,15 +74,15 @@ python = "3.14.7"
 [tasks]
 [tasks.audit]
 description = "Run comprehensive security audit sequentially"
-run = '''
-unirtm run audit:gitleaks
-unirtm run audit:zizmor
-unirtm run audit:osv
-unirtm run audit:npm
-unirtm run audit:pip
-unirtm run audit:govulncheck
-unirtm run audit:trivy
-'''
+depends = [
+    "audit:gitleaks",
+    "audit:zizmor",
+    "audit:osv",
+    "audit:npm",
+    "audit:pip",
+    "audit:govulncheck",
+    "audit:trivy",
+]
 output = "interleaved"
 
 [tasks."audit:gitleaks"]
@@ -237,11 +237,7 @@ output = "interleaved"
 
 [tasks.verify]
 description = "Run full local verification sequentially (lint-all, test, audit) to prevent CI OOM"
-run = '''
-unirtm run lint-all
-unirtm run test
-unirtm run audit
-'''
+depends = ["lint-all", "test", "audit"]
 output = "interleaved"
 
 [tasks."audit:trivy-update"]
