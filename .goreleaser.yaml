@@ -298,7 +298,6 @@ homebrew_casks:
     homepage: "https://github.com/snowdreamtech/template"
     url:
       template: "https://github.com/snowdreamtech/template/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-      verified: "github.com/snowdreamtech/"
     description: "Snowdream Tech AI IDE Template is an enterprise-grade, foundational template designed for multi-AI IDE collaboration."
     license: "MIT"
     hooks:
