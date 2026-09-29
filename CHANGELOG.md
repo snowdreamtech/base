@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.1](https://github.com/snowdreamtech/template/compare/v0.16.0...v0.16.1) (2026-09-29)
+
+
+### 🐛 Bug Fixes
+
+* **docs:** pin mermaid to 11.17.2 and enable legacy peer deps for vitepress build ([2a799a2](https://github.com/snowdreamtech/template/commit/2a799a2a8b476e878fc9431f785c8e58a88e20b2))
+
 ## [0.16.0](https://github.com/snowdreamtech/template/compare/v0.15.17...v0.16.0) (2026-09-29)
 
 
