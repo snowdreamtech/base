@@ -218,6 +218,7 @@ lerna-debug.log*
 .node_repl_history
 *.tgz
 *.log
+*.timestamp-*.mjs
 
 ### Python ###
 __pycache__/
@@ -746,3 +747,4 @@ coverage.svg
 sbom.json
 completions/
 manpages/
+.trivycache/
