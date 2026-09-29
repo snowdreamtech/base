@@ -65,7 +65,7 @@ jobs:
       - name: "⚡ Setup UniRTM"
         uses: snowdreamtech/setup-unirtm@663cc55933eafea30cd63f43e837cecd4a587f45 # v0.7.0
         with:
-          unirtm-version: "0.30.1"
+          unirtm-version: "0.33.2"
           install: true
           trust: true
         env:
@@ -75,7 +75,7 @@ jobs:
         shell: sh
         run: |
           cd docs
-          unirtm exec -- npm install --include=dev
+          unirtm exec -- npm install --include=dev --legacy-peer-deps
           unirtm exec -- npm run docs:build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,5 +104,5 @@ jobs:
     steps:
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
         # Finalizes the deployment, making the new documentation live.

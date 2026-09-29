@@ -3,6 +3,7 @@
 
 
 [env]
+GOTOOLCHAIN = "auto"
 CONFIG_AUTO_UPDATE = "1"
 COREPACK_INTEGRITY_KEYS = "0"
 ENABLE_GITHUB_PROXY = "{% if env.CI is defined %}0{% else %}1{% endif %}"
@@ -30,42 +31,42 @@ UNIRTM_NODE_MIRROR_URL = "{% if env.ALPINE_VERSION is defined %}https://unoffici
 UNIRTM_HOOK_ALLOW_MISSING = "1"
 
 [tools]
-"github:anchore/syft" = "1.51.1"
+"github:anchore/syft" = "1.52.0"
 "github:aquasecurity/trivy" = "0.74.0"
 "github:astral-sh/ruff" = "0.16.6"
 "github:checkmake/checkmake" = "v0.3.2"
-"github:cli/cli" = "2.100.0"
+"github:cli/cli" = "2.101.0"
 "github:dotenv-linter/dotenv-linter" = "4.0.0"
-"github:editorconfig-checker/editorconfig-checker" = "4.0.0"
+"github:editorconfig-checker/editorconfig-checker" = "4.0.2"
 "github:gitleaks/gitleaks" = "8.30.1"
-"github:google/osv-scanner" = "2.5.1"
+"github:google/osv-scanner" = "2.6.0"
 "github:hadolint/hadolint" = "2.15.1"
 "github:koalaman/shellcheck" = "0.11.0"
 "go:mvdan.cc/sh/v3/cmd/shfmt" = "v3.14.0"
 "github:rhysd/actionlint" = "1.7.12"
-"github:zizmorcore/zizmor" = "1.30.0"
-"github:goreleaser/goreleaser" = "2.18.0"
+"github:zizmorcore/zizmor" = "1.30.1"
+"github:goreleaser/goreleaser" = "2.18.2"
 go = "1.27.1"
 node = "26.8.1"
-"npm:@commitlint/cli" = "21.2.2"
-"npm:@commitlint/config-conventional" = "21.2.2"
+"npm:@commitlint/cli" = "21.2.3"
+"npm:@commitlint/config-conventional" = "21.2.3"
 "npm:@taplo/cli" = "0.7.0"
 "npm:bats" = "1.13.0"
 "npm:commitizen" = "4.3.2"
 "npm:cz-conventional-changelog" = "3.3.0"
 "npm:dockerfile-utils" = "0.16.3"
-"npm:eslint" = "10.10.0"
-"npm:markdownlint-cli2" = "0.23.2"
+"npm:eslint" = "10.11.0"
+"npm:markdownlint-cli2" = "0.23.3"
 
-"npm:prettier" = "3.9.6"
+"npm:prettier" = "3.9.9"
 "npm:sort-package-json" = "4.0.0"
 "npm:stylelint" = "17.15.0"
-"pipx:clang-format" = "23.1.0"
+"pipx:clang-format" = "23.1.1"
 "pipx:pip-audit" = "2.10.1"
 "pipx:pre-commit" = "4.6.2"
 "pipx:yamllint" = "1.38.0"
 python = "3.14.7"
-"go:golang.org/x/vuln/cmd/govulncheck" = "v1.7.0"
+"go:golang.org/x/vuln/cmd/govulncheck" = "v1.8.0"
 
 "go:golang.org/x/tools/cmd/goimports" = "v0.49.0"
 "go:github.com/golangci/golangci-lint/v2/cmd/golangci-lint" = "v2.13.2"
@@ -74,21 +75,28 @@ python = "3.14.7"
 [tasks]
 [tasks.audit]
 description = "Run comprehensive security audit sequentially"
-run = '''
-unirtm run audit:gitleaks
-unirtm run audit:zizmor
-unirtm run audit:osv
-unirtm run audit:npm
-unirtm run audit:pip
-unirtm run audit:govulncheck
-unirtm run audit:trivy
-'''
+depends = [
+  "audit:gitleaks",
+  "audit:zizmor",
+  "audit:osv",
+  "audit:npm",
+  "audit:pip",
+  "audit:govulncheck",
+  "audit:trivy",
+]
 output = "interleaved"
+
+[tasks."audit:fix"]
+description = "Auto-fix security flaws and dependency vulnerabilities where supported"
+depends = ["audit:zizmor", "audit:npm", "audit:pip"]
+output = "interleaved"
+env = { UNIRTM_FIX = "1" }
 
 [tasks."audit:gitleaks"]
 description = "Scan for hardcoded secrets"
 run = "unirtm exec -- gitleaks detect --source . --no-banner"
 output = "interleaved"
+env = { GIT_CONFIG_COUNT = "1", GIT_CONFIG_KEY_0 = "diff.renameLimit", GIT_CONFIG_VALUE_0 = "0" }
 
 [tasks."audit:zizmor"]
 description = "Audit GitHub Actions workflows for security flaws"
@@ -165,22 +173,30 @@ output = "interleaved"
 description = "Generate and scan SBOM using Trivy"
 run = '''
 export TRIVY_SKIP_VERSION_CHECK="true"
-export TRIVY_DB_REPOSITORY="public.ecr.aws/aquasecurity/trivy-db"
-export TRIVY_JAVA_DB_REPOSITORY="public.ecr.aws/aquasecurity/trivy-java-db:1"
-export TRIVY_CHECKS_BUNDLE_REPOSITORY="public.ecr.aws/aquasecurity/trivy-checks"
+export TRIVY_DB_REPOSITORY="${TRIVY_DB_REPOSITORY:-ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2}"
+export TRIVY_JAVA_DB_REPOSITORY="${TRIVY_JAVA_DB_REPOSITORY:-ghcr.io/aquasecurity/trivy-java-db:1,public.ecr.aws/aquasecurity/trivy-java-db:1}"
+export TRIVY_CHECKS_BUNDLE_REPOSITORY="${TRIVY_CHECKS_BUNDLE_REPOSITORY:-ghcr.io/aquasecurity/trivy-checks:2,public.ecr.aws/aquasecurity/trivy-checks:2}"
+
+unirtm exec -- trivy fs --format cyclonedx --output sbom.json .
 
 if [ "${CI:-}" = "true" ] || [ "${GITHUB_ACTIONS:-}" = "true" ]; then
-    unirtm exec -- trivy fs --format cyclonedx --output sbom.json .
-    unirtm exec -- trivy sbom sbom.json
+    if ! unirtm exec -- trivy sbom sbom.json; then
+        echo "⚠️  Trivy online scan failed. Trying offline scan with cached DB..."
+        unirtm exec -- trivy sbom --skip-db-update --skip-java-db-update --offline-scan sbom.json
+    fi
 else
-    unirtm exec -- trivy fs --format cyclonedx --output sbom.json .
-    # Try offline mode first. If missing DB, it will fail and we fallback to online.
+    # Try offline mode first. If missing DB, it will fail and we fallback to multi-source online.
     if ! unirtm exec -- trivy sbom --skip-db-update --skip-java-db-update --offline-scan sbom.json; then
-        echo "⚠️  Local Trivy DB missing. Downloading from AWS ECR fallback..."
+        echo "⚠️  Local Trivy DB missing or outdated. Downloading from multi-source registries..."
         unirtm exec -- trivy sbom sbom.json
     fi
 fi
 '''
+output = "interleaved"
+
+[tasks.fix]
+description = "Auto-fix code format, security flaws, and dependencies where supported"
+depends = ["lint", "audit:fix"]
 output = "interleaved"
 
 [tasks.lint]
@@ -217,7 +233,7 @@ description = "Run Go unit tests for all packages recursively"
 # run = 'unirtm exec -- go test -cover -v -timeout 10m -p 4 ./...'
 run = "unirtm exec -- unirtm version"
 output = "interleaved"
-env = { GOTOOLCHAIN = 'local', CGO_ENABLED = '0' }
+env = { GOTOOLCHAIN = 'auto', CGO_ENABLED = '0' }
 
 [tasks."test:shell"]
 description = "Run Bats tests for install.sh"
@@ -236,19 +252,15 @@ output = "interleaved"
 
 [tasks.verify]
 description = "Run full local verification sequentially (lint-all, test, audit) to prevent CI OOM"
-run = '''
-unirtm run lint-all
-unirtm run test
-unirtm run audit
-'''
+depends = ["lint-all", "test", "audit"]
 output = "interleaved"
 
 [tasks."audit:trivy-update"]
 description = "Update Trivy vulnerability databases locally"
 run = '''
-export TRIVY_DB_REPOSITORY="public.ecr.aws/aquasecurity/trivy-db"
-export TRIVY_JAVA_DB_REPOSITORY="public.ecr.aws/aquasecurity/trivy-java-db:1"
-export TRIVY_CHECKS_BUNDLE_REPOSITORY="public.ecr.aws/aquasecurity/trivy-checks"
+export TRIVY_DB_REPOSITORY="ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2"
+export TRIVY_JAVA_DB_REPOSITORY="ghcr.io/aquasecurity/trivy-java-db:1,public.ecr.aws/aquasecurity/trivy-java-db:1"
+export TRIVY_CHECKS_BUNDLE_REPOSITORY="ghcr.io/aquasecurity/trivy-checks:2,public.ecr.aws/aquasecurity/trivy-checks:2"
 
 echo "Downloading main vulnerability DB..."
 unirtm exec -- trivy image --download-db-only

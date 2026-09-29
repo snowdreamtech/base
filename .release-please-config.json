@@ -8,10 +8,7 @@
       "release-as": "3.24.1",
       "changelog-path": "CHANGELOG.md",
       "exclude-paths": ["docker/alpine/CHANGELOG.md"],
-      "extra-files": [
-        "docker/alpine/Dockerfile",
-        ".github/workflows/docker.yml"
-      ]
+      "extra-files": ["docker/alpine/Dockerfile", ".github/workflows/docker.yml"]
     },
     "docker/debian": {
       "release-type": "simple",
@@ -20,10 +17,7 @@
       "release-as": "13.6.0",
       "changelog-path": "CHANGELOG.md",
       "exclude-paths": ["docker/debian/CHANGELOG.md"],
-      "extra-files": [
-        "docker/debian/Dockerfile",
-        ".github/workflows/docker.yml"
-      ]
+      "extra-files": ["docker/debian/Dockerfile", ".github/workflows/docker.yml"]
     },
     "docker/rocky": {
       "release-type": "simple",
@@ -32,10 +26,7 @@
       "release-as": "10.2.0",
       "changelog-path": "CHANGELOG.md",
       "exclude-paths": ["docker/rocky/CHANGELOG.md"],
-      "extra-files": [
-        "docker/rocky/Dockerfile",
-        ".github/workflows/docker.yml"
-      ]
+      "extra-files": ["docker/rocky/Dockerfile", ".github/workflows/docker.yml"]
     }
   },
   "include-v-in-tag": true,
