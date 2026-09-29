@@ -6,6 +6,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0](https://github.com/snowdreamtech/template/compare/v0.15.17...v0.16.0) (2026-09-29)
+
+
+### 🚀 Features
+
+* **task:** add audit:fix and fix tasks for one-click self-healing ([589e107](https://github.com/snowdreamtech/template/commit/589e107522ccdeb2fba0b8bc5c4bb2eb3440b788))
+
+
+### 🐛 Bug Fixes
+
+* **docs:** override lodash-es to 4.18.1 and fix goreleaser deprecation ([5efcc86](https://github.com/snowdreamtech/template/commit/5efcc868f0581c6dcd4b84ec208cde9d71a18b11))
+
+
+### 🛠 Refactoring
+
+* **release:** standardize release asset naming conventions ([efa63e9](https://github.com/snowdreamtech/template/commit/efa63e9cd8a4fc2d73a342772eaef34aaa12d251))
+
+
+### ♻️ Miscellaneous Chores
+
+* **deps:** bump mermaid in /docs in the all-dependencies group ([bd4189e](https://github.com/snowdreamtech/template/commit/bd4189e65620a7d63226dae2a12b494f6acb6d74))
+* **deps:** bump the all-dependencies group in /docs with 2 updates ([6333878](https://github.com/snowdreamtech/template/commit/633387889e894b4fd6b02b0c4a26a44a9ffdf7e0))
+* **deps:** bump the all-dependencies group in /docs with 2 updates ([485f42d](https://github.com/snowdreamtech/template/commit/485f42de0853074dee8368166426986130b6d8e0))
+* **deps:** sync dependabot config and unirtm toolchain ([a7cc3ed](https://github.com/snowdreamtech/template/commit/a7cc3eda6a77ba7de712012d49ced48bd09eae59))
+* **deps:** sync dependabot config and unirtm toolchain ([8c0e483](https://github.com/snowdreamtech/template/commit/8c0e483f46df93398ac92901d0406d8877527129))
+* **deps:** upgrade unirtm-version to 0.33.0 ([4705424](https://github.com/snowdreamtech/template/commit/4705424ba009f34cc81151f0078fab48188c7df0))
+* **git:** ignore temporary mjs timestamps and trivy cache directory ([5875d36](https://github.com/snowdreamtech/template/commit/5875d36e2dbaa136c9cc25844a5144493857309d))
+* **git:** preserve pkg directory in gitignore for standard source layouts ([c0f7694](https://github.com/snowdreamtech/template/commit/c0f76946940ff88af39e0b6a3405e62f2bdc8125))
+* **lint:** exclude .specify directory from editorconfig checking ([8b7aefa](https://github.com/snowdreamtech/template/commit/8b7aefa1dbe795817a82f0040d254ebcd1840466))
+* **toolchain:** configure GOTOOLCHAIN to auto in unirtm environment and test tasks ([6529890](https://github.com/snowdreamtech/template/commit/6529890d2cc171fe02761235e6274517e168cb3e))
+
 ## [0.15.17](https://github.com/snowdreamtech/template/compare/v0.15.16...v0.15.17) (2026-09-12)
 
 
