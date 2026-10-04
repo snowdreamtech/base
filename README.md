@@ -190,6 +190,7 @@ project-root/
 git clone <repo>
 cd <repo>
 git config core.ignorecase false  # MANDATORY for Mac/Windows
+git config core.filemode false    # Recommended for Windows (prevents false permission changes)
 unirtm run setup
 unirtm run install
 ```

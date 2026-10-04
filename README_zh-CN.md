@@ -190,6 +190,7 @@ project-root/
 git clone <repo>
 cd <repo>
 git config core.ignorecase false  # Mac/Windows 用户必须执行此设置
+git config core.filemode false    # Windows 用户推荐设置（避免文件权限误报变更）
 unirtm run setup
 unirtm run install
 ```
