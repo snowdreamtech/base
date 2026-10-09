@@ -206,16 +206,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-trivy-
 
-      - name: "🏗️ Configure QEMU Emulation"
-        if: steps.variant-filter.outputs.skip != 'true'
-        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
-
-      - name: "🛠️ Configure Docker Buildx"
-        if: steps.variant-filter.outputs.skip != 'true'
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-        with:
-          buildkitd-config: .github/buildkitd.toml
-
       - name: "🔑 Initialize DockerHub Registry Session"
         if: steps.variant-filter.outputs.skip != 'true'
         id: login-dockerhub
@@ -224,6 +214,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
       - name: "🔑 Initialize GitHub Container Registry Session"
         if: steps.variant-filter.outputs.skip != 'true'
         id: login-ghcr
@@ -246,6 +237,16 @@ jobs:
             echo "::error::All registry logins failed. Cannot proceed."
             exit 1
           fi
+
+      - name: "🏗️ Configure QEMU Emulation"
+        if: steps.variant-filter.outputs.skip != 'true'
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - name: "🛠️ Configure Docker Buildx"
+        if: steps.variant-filter.outputs.skip != 'true'
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          buildkitd-config: .github/buildkitd.toml
 
       - name: "🎯 Check if tag is stable release"
         id: tag-check
