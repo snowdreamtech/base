@@ -6,6 +6,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0](https://github.com/snowdreamtech/template/compare/v0.16.1...v0.17.0) (2026-10-10)
+
+
+### 🚀 Features
+
+* **pre-commit:** disallow absolute symlinks in check-symlinks hook ([3dcd93a](https://github.com/snowdreamtech/template/commit/3dcd93a4859edced1e44f3c6c133a1254c9380d9))
+
+
+### 🐛 Bug Fixes
+
+* **docs:** override vulnerable dependencies and update lockfile ([9b93e56](https://github.com/snowdreamtech/template/commit/9b93e566a06107f7d2453cba628097f4365eb2e4))
+* **docs:** resolve OSV vulnerabilities and regenerate clean package-lock with official integrity ([b386e9c](https://github.com/snowdreamtech/template/commit/b386e9cf4360a1536074ff7459b0f4a7b007f8e0))
+* **lint:** enhance cross-platform pre-commit hooks and symlink handling ([31ce37c](https://github.com/snowdreamtech/template/commit/31ce37cbd9b95b2b712e1eaa23fc3b2d30be1626))
+
+
+### 📖 Documentation
+
+* **git:** add core.filemode and env-agnostic config guidelines ([b823339](https://github.com/snowdreamtech/template/commit/b823339b79074203246fdc101f492329d1afeaf8))
+
+
+### ♻️ Miscellaneous Chores
+
+* **deps:** bump the all-dependencies group in /docs with 3 updates ([fffce6f](https://github.com/snowdreamtech/template/commit/fffce6fab0fc7b446089b6b8aa369aaf3e7c1fde))
+* **deps:** sync dependabot config and unirtm toolchain ([30ecf35](https://github.com/snowdreamtech/template/commit/30ecf3533b7bd9559fbd49f45c869ee18df92a39))
+* **deps:** sync dependabot config and unirtm toolchain ([72111be](https://github.com/snowdreamtech/template/commit/72111beff3774707bde324c23b2d2ba51f681123))
+* **deps:** sync dependabot config and unirtm toolchain ([72314c6](https://github.com/snowdreamtech/template/commit/72314c6f04457895af744bda09bedbf4bae9da68))
+* **deps:** update unirtm.lock for windows-amd64 toolchains ([36cb314](https://github.com/snowdreamtech/template/commit/36cb314bcf700d39010960cb5f99613ad9d6e240))
+* **deps:** upgrade unirtm-version to 0.34.0 ([a6cb721](https://github.com/snowdreamtech/template/commit/a6cb7217b78c9580803733f00a40da547b28edfa))
+* **template:** remove obsolete workflows symlinks for kilocode and windsurf ([1a98637](https://github.com/snowdreamtech/template/commit/1a98637ad6d5b131262008e6d2d8248f1e1996dd))
+
 ## [0.16.1](https://github.com/snowdreamtech/template/compare/v0.16.0...v0.16.1) (2026-09-29)
 
 
